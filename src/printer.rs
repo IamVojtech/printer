@@ -11,7 +11,7 @@ pub struct Printer {
     drawing: bool,
 
     pen_position: PenPosition, // Position is very relative
-    scale: u32,
+    scale: usize,
     writer: Writer
 }
 
@@ -24,6 +24,7 @@ impl Printer {
         xa_motor.set_speed_sp(100);
         ya_motor.set_speed_sp(100);
         za_motor.set_speed_sp(100);
+        ya_motor.set_position(0);
 
         ya_motor.run_to_rel_pos(Some(100));
 
@@ -88,8 +89,16 @@ impl Printer {
         self.ya_motor.set_position(0);
     }
 
+    pub fn wrap_text(&mut self) {
+        self.writer.current_line += 1;
+    }
+
     pub fn draw_character(&mut self, character: Char) {
-        let padding_left = self.writer.written.len() * 10;
+        let char_padding_x = self.writer.char_map.char_width - (character.width / 2);
+        let char_padding_y = self.writer.char_map.char_height - (character.height / 2);
+        let x_char_index = self.writer.written.len() % (self.writer.current_line + 1);
+        let padding_left = x_char_index * self.writer.char_map.char_width;
+        let padding_top = (self.writer.current_line + 1) * self.writer.char_map.char_height;
         
         self.set_drawing(false);
         
@@ -107,8 +116,8 @@ impl Printer {
                     println!("Moved by x: {x}, y: {y}, on char {}", character.char);
                 }
                 Instruction::MoveTo { x, y } => {
-                    let x_pos = (x + padding_left as u32) * self.scale;
-                    let y_pos = y * self.scale;
+                    let x_pos = (x + padding_left + char_padding_x) * self.scale;
+                    let y_pos = (y + padding_top + char_padding_y) * self.scale;
 
                     self.xa_motor.run_to_abs_pos(Some(x_pos as i32));
                     self.ya_motor.run_to_abs_pos(Some(y_pos as i32));
@@ -128,6 +137,9 @@ impl Printer {
         }
 
         self.set_drawing(false);
+        if self.writer.wrap_after % self.writer.written.len() == 0 {
+            self.wrap_text();
+        }
         self.writer.written.push(character);
         self.writer.to_write.remove(0);
         println!("----------------")
@@ -135,12 +147,12 @@ impl Printer {
 }
 
 pub struct PenPosition {
-    x: u32,
-    y: u32
+    x: usize,
+    y: usize
 }
 
 impl PenPosition {
-    pub fn new(x: u32, y: u32) -> Self {
+    pub fn new(x: usize, y: usize) -> Self {
         Self { x, y }
     }
 }
