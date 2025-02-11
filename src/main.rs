@@ -8,7 +8,7 @@ mod writer;
 
 fn main() {
     let mut input = String::new();
-    print!("Zadej text k vytištění: ");
+    println!("Zadej text k vytištění: ");
     let b1 = std::io::stdin().read_line(&mut input).unwrap();
 
     let mut printer = Printer::init(input).unwrap();
