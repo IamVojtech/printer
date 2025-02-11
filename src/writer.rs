@@ -5,7 +5,9 @@ pub struct Writer {
     pub raw_input: String,
     pub input: Vec<Char>,
     pub written: Vec<Char>,
-    pub to_write: Vec<Char>
+    pub to_write: Vec<Char>,
+    pub wrap_after: usize,
+    pub current_line: usize
 }
 
 impl Writer {
@@ -23,12 +25,16 @@ impl Writer {
             }
         }
 
+        let wrap_after = 10;
+
         Self {
             char_map,
             raw_input: input,
             input: chars.clone(),
             written: Vec::new(),
-            to_write: chars
+            to_write: chars,
+            wrap_after,
+            current_line: 0
         }
     }
 }
