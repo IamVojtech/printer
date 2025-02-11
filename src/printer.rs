@@ -17,15 +17,21 @@ pub struct Printer {
 
 impl Printer {
     pub fn init(input: String) -> Ev3Result<Self> {
-        let xa_motor = LargeMotor::get(MotorPort::OutB)?;
-        let ya_motor = LargeMotor::get(MotorPort::OutA)?;
+        let xa_motor = LargeMotor::get(MotorPort::OutA)?;
+        let ya_motor = LargeMotor::get(MotorPort::OutB)?;
         let za_motor = LargeMotor::get(MotorPort::OutC)?;
         
         xa_motor.set_speed_sp(100);
         ya_motor.set_speed_sp(100);
         za_motor.set_speed_sp(100);
 
-        za_motor.set_position(0);
+        ya_motor.run_to_rel_pos(Some(100));
+
+        #[cfg(target_os = "linux")]
+        ya_motor.wait_until_not_moving(None);
+
+        ya_motor.set_position(0);
+
 
         let drawing = false;
 
@@ -49,33 +55,37 @@ impl Printer {
 
     pub fn set_drawing(&mut self, drawing: bool) {
         if self.drawing == drawing {
-            return
+            return;
         }
 
-        if drawing {
-            self.za_motor.run_to_abs_pos(Some(0));
+        let target_pos = if drawing { 0 } else { -80 };
 
-            #[cfg(target_os = "linux")]
-            self.za_motor.wait_until_not_moving(None);
+        self.za_motor.run_to_abs_pos(Some(target_pos));
 
-        } else {
-            self.za_motor.run_to_abs_pos(Some(-10));
-
-            #[cfg(target_os = "linux")]
-            self.za_motor.wait_until_not_moving(None);
-        }
+        #[cfg(target_os = "linux")]
+        self.za_motor.wait_until_not_moving(None);
     }
+
 
     pub fn start_drawing(&mut self) {
         for character in self.writer.to_write.clone() {
             self.draw_character(character);
         }
+        self.end_drawing();
     }
     
     pub fn end_drawing(&mut self) {
         self.xa_motor.run_to_abs_pos(Some(0));
         self.ya_motor.run_to_abs_pos(Some(0));
         self.za_motor.run_to_abs_pos(Some(0));
+
+        self.ya_motor.set_speed_sp(1000);
+        self.ya_motor.run_to_rel_pos(Some(-300));
+
+        #[cfg(target_os = "linux")]
+        self.ya_motor.wait_until_not_moving(None);
+
+        self.ya_motor.set_position(0);
     }
 
     pub fn draw_character(&mut self, character: Char) {
@@ -120,7 +130,6 @@ impl Printer {
         self.set_drawing(false);
         self.writer.written.push(character);
         self.writer.to_write.remove(0);
-        self.end_drawing();
         println!("----------------")
     }
 }
