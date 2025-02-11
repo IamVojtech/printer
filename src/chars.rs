@@ -4,21 +4,24 @@ use std::collections::HashMap;
 pub struct Char {
     pub char: char,
     pub instructions: Vec<Instruction>,
-    pub width: u32
+    pub width: usize,
+    pub height: usize,
 }
 
 // Every char draw should start with pen up automaticaly
 // Position is relative to character
 #[derive(Debug, Clone)]
 pub enum Instruction {
-    MoveBy { x: u32, y: u32 },
-    MoveTo { x: u32, y: u32 },
+    MoveBy { x: usize, y: usize },
+    MoveTo { x: usize, y: usize },
     PenDown,
     PenUp
 }
 
 pub struct CharMap {
-    pub chars: HashMap<char, Char>
+    pub chars: HashMap<char, Char>,
+    pub char_height: usize,
+    pub char_width: usize
 }
 
 impl CharMap {
@@ -41,7 +44,8 @@ impl CharMap {
                         Instruction::PenDown,
                         Instruction::MoveTo { x: 0, y: 8 }
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
                 }
             ),
             (
@@ -60,7 +64,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 10, y: 6 },
                         Instruction::MoveTo { x: 8, y: 8 }
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -76,7 +82,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 10, y: 0 },
                         Instruction::MoveTo { x: 10, y: 2 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -93,7 +101,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 8, y: 16 },
                         Instruction::MoveTo { x: 0, y: 16 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -111,7 +121,9 @@ impl CharMap {
                         Instruction::PenDown,
                         Instruction::MoveTo { x: 6, y: 8 },
                     ],
-                    width: 8
+                    width: 8,
+                    height: 16
+
                 }
             ),
             (
@@ -128,7 +140,9 @@ impl CharMap {
                         Instruction::PenDown,
                         Instruction::MoveTo { x: 6, y: 8 },
                     ],
-                    width: 8
+                    width: 8,
+                    height: 16
+
                 }
             ),
             (
@@ -145,7 +159,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 0, y: 0 },
                         Instruction::MoveTo { x: 8, y: 0 },
                     ],
-                    width: 8
+                    width: 8,
+                    height: 16
+
                 }
             ),
             (
@@ -165,7 +181,9 @@ impl CharMap {
                         Instruction::PenDown,
                         Instruction::MoveTo { x: 8, y: 16 },
                     ],
-                    width: 8
+                    width: 8,
+                    height: 16
+
                 }
             ),
             (
@@ -177,7 +195,9 @@ impl CharMap {
                         Instruction::PenDown,
                         Instruction::MoveTo { x: 8, y: 16 },
                     ],
-                    width: 1
+                    width: 1,
+                    height: 16
+
                 }
             ),
             (
@@ -192,7 +212,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 5, y: 16 },
                         Instruction::MoveTo { x: 0, y: 16 },
                     ],
-                    width: 8
+                    width: 8,
+                    height: 16
+
                 }
             ),
             (
@@ -209,7 +231,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 0, y: 8 },
                         Instruction::MoveTo { x: 8, y: 16 },
                     ],
-                    width: 8
+                    width: 8,
+                    height: 16
+
                 }
             ),
             (
@@ -222,7 +246,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 0, y: 16 },
                         Instruction::MoveTo { x: 8, y: 16 },
                     ],
-                    width: 8
+                    width: 8,
+                    height: 16
+
                 }
             ),
             (
@@ -237,7 +263,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 12, y: 0 },
                         Instruction::MoveTo { x: 12, y: 16 },
                     ],
-                    width: 12
+                    width: 12,
+                    height: 16
+
                 }
             ),
             (
@@ -251,7 +279,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 10, y: 16 },
                         Instruction::MoveTo { x: 10, y: 0 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -265,7 +295,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 10, y: 16 },
                         Instruction::MoveTo { x: 0, y: 16 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -280,7 +312,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 8, y: 8 },
                         Instruction::MoveTo { x: 0, y: 8 },
                     ],
-                    width: 8
+                    width: 8,
+                    height: 16
+
                 }
             ),
             (
@@ -299,7 +333,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 7, y: 13 },
                         Instruction::MoveTo { x: 11, y: 17 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -315,7 +351,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 0, y: 8 },
                         Instruction::MoveTo { x: 8, y: 16 },
                     ],
-                    width: 8
+                    width: 8,
+                    height: 16
+
                 }
             ),
             (
@@ -332,7 +370,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 0, y: 0 },
                         Instruction::MoveTo { x: 10, y: 0 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -348,7 +388,9 @@ impl CharMap {
                         Instruction::PenDown,
                         Instruction::MoveTo { x: 5, y: 16 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -364,7 +406,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 10, y: 14 },
                         Instruction::MoveTo { x: 10, y: 0 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -379,7 +423,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 10, y: 8 },
                         Instruction::MoveTo { x: 10, y: 0 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -394,7 +440,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 12, y: 16 },
                         Instruction::MoveTo { x: 12, y: 0 },
                     ],
-                    width: 12
+                    width: 12,
+                    height: 16
+
                 }
             ),
             (
@@ -410,7 +458,9 @@ impl CharMap {
                         Instruction::PenDown,
                         Instruction::MoveTo { x: 10, y: 0 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -427,7 +477,9 @@ impl CharMap {
                         Instruction::PenDown,
                         Instruction::MoveTo { x: 5, y: 16 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -441,7 +493,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 0, y: 16 },
                         Instruction::MoveTo { x: 10, y: 16 },
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             ),
             (
@@ -453,16 +507,17 @@ impl CharMap {
                         Instruction::PenDown,
                         Instruction::MoveTo { x: 10, y: 16 }
                     ],
-                    width: 10
+                    width: 10,
+                    height: 16
+
                 }
             )
         ]);
 
-        // let top = 2;
-        // let left = 3;
-
         Self {
-            chars
+            chars,
+            char_height: 20,
+            char_width: 16
         }
     }
 }
