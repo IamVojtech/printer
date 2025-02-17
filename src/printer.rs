@@ -2,7 +2,6 @@ use ev3dev_lang_rust::{motors::{LargeMotor, MotorPort}, Ev3Result};
 
 use crate::{chars::{Char, Instruction}, writer::Writer};
 
-// Motors are commented, because for testing is compiled for normal cpus, not arm robot
 pub struct Printer {
     xa_motor: LargeMotor,
     ya_motor: LargeMotor,
@@ -20,7 +19,7 @@ impl Printer {
         let xa_motor = LargeMotor::get(MotorPort::OutA)?;
         let ya_motor = LargeMotor::get(MotorPort::OutB)?;
         let za_motor = LargeMotor::get(MotorPort::OutC)?;
-        
+
         xa_motor.set_speed_sp(100);
         ya_motor.set_speed_sp(100);
         za_motor.set_speed_sp(100);
@@ -64,14 +63,12 @@ impl Printer {
 
         let target_pos = if drawing { 25 } else { 0 };
 
-        self.za_motor.run_to_abs_pos(Some(target_pos));
+       self.za_motor.run_to_abs_pos(Some(target_pos));
 
         self.drawing = drawing;
 
         #[cfg(target_os = "linux")]
         self.za_motor.wait_until_not_moving(None);
-
-        println!("Position: {:?}", self.za_motor.get_position());
     }
 
 
@@ -106,7 +103,7 @@ impl Printer {
     pub fn draw_character(&mut self, character: Char) {
         let char_padding_x = self.writer.char_map.char_width - (character.width / 2);
         let char_padding_y = self.writer.char_map.char_height - (character.height / 2);
-        let x_char_index = self.writer.written.len() % (self.writer.current_line + 1);
+        let x_char_index = self.writer.written.len() % self.writer.wrap_after;
         let padding_left = x_char_index * self.writer.char_map.char_width;
         let padding_top = (self.writer.current_line + 1) * self.writer.char_map.char_height;
         
