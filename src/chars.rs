@@ -12,7 +12,6 @@ pub struct Char {
 // Position is relative to character
 #[derive(Debug, Clone)]
 pub enum Instruction {
-    MoveBy { x: usize, y: usize },
     MoveTo { x: usize, y: usize },
     PenDown,
     PenUp
