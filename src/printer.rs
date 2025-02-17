@@ -24,14 +24,17 @@ impl Printer {
         xa_motor.set_speed_sp(100);
         ya_motor.set_speed_sp(100);
         za_motor.set_speed_sp(100);
-        ya_motor.set_position(0);
 
+        za_motor.run_to_abs_pos(Some(0));
+
+        #[cfg(target_os = "linux")]
+        za_motor.wait_until_not_moving(None);
+
+        println!("[DEBUG] Loading paper");
         ya_motor.run_to_rel_pos(Some(100));
 
         #[cfg(target_os = "linux")]
         ya_motor.wait_until_not_moving(None);
-
-        ya_motor.set_position(0);
 
 
         let drawing = false;
@@ -59,16 +62,21 @@ impl Printer {
             return;
         }
 
-        let target_pos = if drawing { 0 } else { -80 };
+        let target_pos = if drawing { 25 } else { 0 };
 
         self.za_motor.run_to_abs_pos(Some(target_pos));
 
+        self.drawing = drawing;
+
         #[cfg(target_os = "linux")]
         self.za_motor.wait_until_not_moving(None);
+
+        println!("Position: {:?}", self.za_motor.get_position());
     }
 
 
     pub fn start_drawing(&mut self) {
+        println!("[DEBUG] Drawing started");
         for character in self.writer.to_write.clone() {
             self.draw_character(character);
         }
@@ -81,7 +89,8 @@ impl Printer {
         self.za_motor.run_to_abs_pos(Some(0));
 
         self.ya_motor.set_speed_sp(1000);
-        self.ya_motor.run_to_rel_pos(Some(-300));
+        println!("[DEBUG] ending drawing");
+        self.ya_motor.run_to_rel_pos(Some(-500));
 
         #[cfg(target_os = "linux")]
         self.ya_motor.wait_until_not_moving(None);
@@ -90,6 +99,7 @@ impl Printer {
     }
 
     pub fn wrap_text(&mut self) {
+        println!("[DEBUG] Line wrap");
         self.writer.current_line += 1;
     }
 
@@ -106,14 +116,11 @@ impl Printer {
             match instruction {
                 Instruction::PenUp => {
                     self.set_drawing(false);
+                    println!("[DEBUG] Moved pen up");
                 }
                 Instruction::PenDown => {
                     self.set_drawing(true);
-                }
-                Instruction::MoveBy { x, y } => {
-                    self.pen_position.x += x * self.scale;
-                    self.pen_position.y += y * self.scale;
-                    println!("Moved by x: {x}, y: {y}, on char {}", character.char);
+                    println!("[DEBUG] Moved pen down");
                 }
                 Instruction::MoveTo { x, y } => {
                     let x_pos = (x + padding_left + char_padding_x) * self.scale;
@@ -131,18 +138,20 @@ impl Printer {
                     self.pen_position.x = x_pos;
                     self.pen_position.y = y_pos;
 
-                    println!("Moved to x: {}, y: {}, on char {}", self.pen_position.x, self.pen_position.y, character.char);
+                    println!("[DEBUG] Moved to x: {}, y: {}, on char {}", self.pen_position.x, self.pen_position.y, character.char);
                 }
             }
         }
 
         self.set_drawing(false);
-        if self.writer.wrap_after % self.writer.written.len() == 0 {
+
+        if (self.writer.written.len() + 1) % self.writer.wrap_after == 0 {
             self.wrap_text();
         }
+
         self.writer.written.push(character);
         self.writer.to_write.remove(0);
-        println!("----------------")
+        println!("-------------------------")
     }
 }
 
