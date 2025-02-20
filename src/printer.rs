@@ -29,11 +29,7 @@ impl Printer {
         #[cfg(target_os = "linux")]
         za_motor.wait_until_not_moving(None);
 
-        println!("[DEBUG] Loading paper");
-        ya_motor.run_to_rel_pos(Some(100));
-
-        #[cfg(target_os = "linux")]
-        ya_motor.wait_until_not_moving(None);
+        ya_motor.set_position(0);
 
 
         let drawing = false;
@@ -63,12 +59,12 @@ impl Printer {
 
         let target_pos = if drawing { 25 } else { 0 };
 
-       self.za_motor.run_to_abs_pos(Some(target_pos));
+        self.za_motor.run_to_abs_pos(Some(target_pos));
 
         self.drawing = drawing;
 
         #[cfg(target_os = "linux")]
-        self.za_motor.wait_until_not_moving(None);
+        self.za_motor.wait_until_not_moving(Some(std::time::Duration::from_millis(100)));
     }
 
 
@@ -84,15 +80,9 @@ impl Printer {
         self.xa_motor.run_to_abs_pos(Some(0));
         self.ya_motor.run_to_abs_pos(Some(0));
         self.za_motor.run_to_abs_pos(Some(0));
-
-        self.ya_motor.set_speed_sp(1000);
         println!("[DEBUG] ending drawing");
-        self.ya_motor.run_to_rel_pos(Some(-500));
 
-        #[cfg(target_os = "linux")]
-        self.ya_motor.wait_until_not_moving(None);
-
-        self.ya_motor.set_position(0);
+        // Paper is not comming out because the function for it is in different file
     }
 
     pub fn wrap_text(&mut self) {
@@ -123,14 +113,17 @@ impl Printer {
                     let x_pos = (x + padding_left + char_padding_x) * self.scale;
                     let y_pos = (y + padding_top + char_padding_y) * self.scale;
 
-                    self.xa_motor.run_to_abs_pos(Some(x_pos as i32));
                     self.ya_motor.run_to_abs_pos(Some(y_pos as i32));
 
-                    #[cfg(target_os = "linux")]
-                    self.xa_motor.wait_until_not_moving(None);
+                    // x motor is little bit slowed down
+                    std::thread::sleep(std::time::Duration::from_millis(5));
+                    self.xa_motor.run_to_abs_pos(Some(x_pos as i32));
 
                     #[cfg(target_os = "linux")]
-                    self.ya_motor.wait_until_not_moving(None);
+                    self.xa_motor.wait_until_not_moving(Some(std::time::Duration::from_millis(100)));
+
+                    #[cfg(target_os = "linux")]
+                    self.ya_motor.wait_until_not_moving(Some(std::time::Duration::from_millis(100)));
 
                     self.pen_position.x = x_pos;
                     self.pen_position.y = y_pos;
