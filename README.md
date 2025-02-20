@@ -12,8 +12,8 @@ BITBOT is a robotic plotter/printer built with LEGO Mindstorms that can write us
 Our goal was to create a project that is not only practical but also demonstrates the capabilities of Rust when integrated with LEGO Mindstorms. BITBOT is designed to be intuitive to control, enabling precise text writing on paper with minimal effort. Developed specifically for Robotiáda, this project highlights the seamless fusion of software and mechanical engineering, showcasing the potential of combining modern programming with robotics.
 
 ## 👨‍💻 Authors
-- [![iamvojtech](https://img.shields.io/badge/Instagram-%40iamvojtech-purple?style=flat&logo=instagram)](https://instagram.com/iamvojtech)
-- [![steviks](https://img.shields.io/badge/Instagram-%40steviks-purple?style=flat&logo=instagram)](https://instagram.com/steviks)
+- [![iamvojtech](https://img.shields.io/badge/Instagram-%40iamvojtechcom-purple?style=flat&logo=instagram)](https://instagram.com/iamvojtechcom)
+- [![steviks](https://img.shields.io/badge/Instagram-%40steviksik-purple?style=flat&logo=instagram)](https://instagram.com/steviksik)
 
 ---
 📩 **Want to learn more?** Don't be shy to contact us! 😊
