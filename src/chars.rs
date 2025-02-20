@@ -500,6 +500,18 @@ impl CharMap {
                 }
             ),
             (
+                ' ', 
+                Char {
+                    char: ' ',
+                    instructions: vec![
+                        
+                    ],
+                    width: 10,
+                    height: 16
+
+                }
+            ),
+            (
                 '_', 
                 Char {
                     char: '_',
@@ -512,7 +524,41 @@ impl CharMap {
                     height: 16
 
                 }
-            )
+            ),
+            (
+                '.', 
+                Char {
+                    char: '.',
+                    instructions: vec![
+                        Instruction::MoveTo { x: 0, y: 16 },
+                        Instruction::PenDown,
+                        Instruction::MoveTo { x: 0, y: 14 },
+                        Instruction::MoveTo { x: 2, y: 14 },
+                        Instruction::MoveTo { x: 2, y: 16 },
+                        Instruction::MoveTo { x: 0, y: 16 },
+                    ],
+                    width: 10,
+                    height: 16
+
+                }
+            ),
+            (
+                ',', 
+                Char {
+                    char: ',',
+                    instructions: vec![
+                        Instruction::MoveTo { x: 0, y: 20 },
+                        Instruction::PenDown,
+                        Instruction::MoveTo { x: 0, y: 14 },
+                        Instruction::MoveTo { x: 2, y: 14 },
+                        Instruction::MoveTo { x: 2, y: 20 },
+                        Instruction::MoveTo { x: 0, y: 20 },
+                    ],
+                    width: 10,
+                    height: 16
+
+                }
+            ),
         ]);
 
         Self {
