@@ -293,6 +293,7 @@ impl CharMap {
                         Instruction::MoveTo { x: 10, y: 0 },
                         Instruction::MoveTo { x: 10, y: 16 },
                         Instruction::MoveTo { x: 0, y: 16 },
+                        Instruction::MoveTo { x: 0, y: 0 },
                     ],
                     width: 10,
                     height: 16
@@ -328,8 +329,9 @@ impl CharMap {
                         Instruction::MoveTo { x: 8, y: 16 },
                         Instruction::MoveTo { x: 0, y: 16 },
                         Instruction::MoveTo { x: 0, y: 0 },
-                        Instruction::PenDown,
+                        Instruction::PenUp,
                         Instruction::MoveTo { x: 7, y: 13 },
+                        Instruction::PenDown,
                         Instruction::MoveTo { x: 11, y: 17 },
                     ],
                     width: 10,
